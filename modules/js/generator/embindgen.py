@@ -978,9 +978,12 @@ if __name__ == "__main__":
     whiteListFile = sys.argv[5]
 
     if whiteListFile.endswith(".json") or whiteListFile.endswith(".JSON"):
-        with open(whiteListFile) as f:
+        import os
+        sanitized_path = os.path.normpath(os.path.join(os.getcwd(), whiteListFile))
+        if not sanitized_path.startswith(os.getcwd()):
+            raise ValueError("Invalid file path")
+        with open(sanitized_path) as f:
             gen_dict = json.load(f)
-        f.close()
         white_list = makeWhiteListJson(gen_dict)
         namespace_prefix_override = makeNamespacePrefixOverride(gen_dict)
     elif whiteListFile.endswith(".py") or whiteListFile.endswith(".PY"):
